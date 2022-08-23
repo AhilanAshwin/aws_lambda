@@ -1,6 +1,6 @@
 curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d '{
-    "resource": "/hello",
-    "path": "/hello/",
+    "resource": "/",
+    "path": "/",
     "httpMethod": "GET",
     "headers": {
       "Accept": "*/*",
@@ -112,7 +112,7 @@ curl -XPOST "http://localhost:9000/2015-03-31/functions/function/invocations" -d
         "userAgent": "PostmanRuntime/2.4.5",
         "user": null
       },
-      "resourcePath": "/hello/",
+      "resourcePath": "/",
       "httpMethod": "GET",
       "apiId": "gy415nuibc"
     },
