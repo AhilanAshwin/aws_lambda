@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from mangum import Mangum
 
 app = FastAPI(title="Fast API App")
+handler = Mangum(app)
 
 
 @app.get("/", status_code=200)
@@ -15,4 +17,4 @@ def healthcheck():
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, log_level="debug")
+    uvicorn.run(app, host="0.0.0.0", port=80, log_level="debug")
