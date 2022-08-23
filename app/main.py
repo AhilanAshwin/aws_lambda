@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
-app = FastAPI(title="Fast API App")
+app = FastAPI(title="Fast API App", root_path='/dev')
 handler = Mangum(app)
 
 
