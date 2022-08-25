@@ -1,4 +1,4 @@
-# Lambda consumer handler for events
+# NOTE: Do not change this name
 def consumer_handler(event, context):
-    print("A message was recieved: {event}")
+    print(f"A message was recieved: {event}")
     return "Success"

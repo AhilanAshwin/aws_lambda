@@ -11,11 +11,6 @@ data "aws_iam_policy_document" "lambda_assume_policy" {
   }
 }
 
-resource "aws_iam_role" "api_lambda_role" {
-  name               = "ApiLambdaRole"
-  assume_role_policy = data.aws_iam_policy_document.lambda_assume_policy.json
-}
-
 # data "aws_iam_policy_document" "lambda_sqs_producer_policy" {
 #   statement {
 #     effect = "Allow"
@@ -25,10 +20,15 @@ resource "aws_iam_role" "api_lambda_role" {
 #       "sqs:SendMessage*"
 #     ]
 #     resources = [
-#       var.message_queue_arn
+#       module.sqs.sqs_queue_arn
 #     ]
 #   }
 # }
+
+resource "aws_iam_role" "lambda_role" {
+  name               = "ApiLambdaRole"
+  assume_role_policy = data.aws_iam_policy_document.lambda_assume_policy.json
+}
 
 # resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
 #   role       = aws_iam_role.api_lambda_role.name
@@ -46,11 +46,29 @@ resource "aws_iam_role" "api_lambda_role" {
 # }
 
 resource "aws_lambda_function" "api_lambda" {
-  function_name = local.prefix
-  role          = aws_iam_role.api_lambda_role.arn
+  function_name = "${local.prefix}-api"
+  role          = aws_iam_role.lambda_role.arn
   image_uri     = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
   package_type  = "Image"
 }
+
+# resource "aws_lambda_function" "worker_lambda" {
+#   function_name = "${local.prefix}-worker"
+#   role          = aws_iam_role.lambda_role.arn
+#   image_uri     = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
+#   package_type  = "Image"
+
+#   image_config {
+#     command = ["app.lambda_function.consumer_handler"]
+#   }
+# }
+
+# resource "aws_lambda_event_source_mapping" "event_source_mapping" {
+#   event_source_arn = module.sqs.sqs_queue_arn
+#   enabled          = true
+#   function_name    = aws_lambda_function.worker_lambda.function_name
+#   batch_size       = 1
+# }
 
 resource "aws_lambda_permission" "api_lambda_permission" {
   statement_id  = "AllowExecutionFromAPIGateway"
