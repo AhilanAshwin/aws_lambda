@@ -70,38 +70,5 @@ resource "aws_api_gateway_stage" "api_stage" {
   deployment_id = aws_api_gateway_deployment.api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   stage_name    = "dev"
-
-  #   cache_cluster_enabled = true
-  #   cache_cluster_size    = "0.5"
-
-  #   xray_tracing_enabled = true
-
-  #   access_log_settings {
-  #     destination_arn = aws_cloudwatch_log_group.api_gateway_log_group.arn
-  #     format          = "{\"requestId\":\"$context.requestId\", \"ip\": \"$context.identity.sourceIp\", \"caller\":\"$context.identity.caller\", \"requestTime\":\"$context.requestTime\", \"httpMethod\":\"$context.httpMethod\", \"resourcePath\":\"$context.resourcePath\", \"status\":\"$context.status\", \"responseLength\":\"$context.responseLength\"}"
-  #   }
 }
 
-# resource "aws_api_gateway_usage_plan" "api_gateway_usage_plan" {
-#   name = "FastAPIUsagePlan"
-
-#   api_stages {
-#     api_id = aws_api_gateway_rest_api.api_gateway.id
-#     stage  = aws_api_gateway_stage.api_stage.stage_name
-#   }
-# }
-
-# resource "aws_api_gateway_api_key" "api_key" {
-#   name = "FastAPI"
-# }
-
-# resource "aws_api_gateway_usage_plan_key" "api_gateway_usage_plan_key" {
-#   key_id        = aws_api_gateway_api_key.api_key.id
-#   key_type      = "API_KEY"
-#   usage_plan_id = aws_api_gateway_usage_plan.api_gateway_usage_plan.id
-# }
-
-output "api_gateway_stage_url" {
-  description = "API Gateway stage invocation URL"
-  value       = aws_api_gateway_stage.api_stage.invoke_url
-}

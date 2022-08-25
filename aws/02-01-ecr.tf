@@ -27,13 +27,4 @@ data "aws_ecr_image" "lambda_image" {
   image_tag       = "latest"
 }
 
-output "ecr_registry_id" {
-  description = "The registry ID of where the repository was created"
-  value       = aws_ecr_repository.ecr_repo.registry_id
-}
-
-output "ecr_repository_url" {
-  description = "The URL of the ecr reposiory"
-  value       = aws_ecr_repository.ecr_repo.repository_url
-}
 
