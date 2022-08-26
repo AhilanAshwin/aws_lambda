@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
+from fastapi_events.dispatcher import dispatch
 from fastapi_events.middleware import EventHandlerASGIMiddleware
 from fastapi_events.handlers.aws import SQSForwardHandler
 
@@ -19,6 +20,12 @@ def get_index():
 @ app.get('/ping', status_code=200)
 def healthcheck():
     return {'status': "Success"}
+
+
+@app.post("/message", status_code=200)
+def send_message():
+    dispatch("to_queue", payload={'message': 'Sent through queue'})
+    return {'status': 'Sent'}
 
 
 if __name__ == '__main__':
