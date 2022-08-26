@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
-app = FastAPI(title="Whats App Blaster API", root_path="/dev/")
+# app = FastAPI(title="Whats App Blaster API", root_path="/dev/")
+app = FastAPI(title="Whats App Blaster API")
 handler = Mangum(app)
 
 
