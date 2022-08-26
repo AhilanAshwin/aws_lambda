@@ -4,11 +4,11 @@ from mangum import Mangum
 from fastapi_events.middleware import EventHandlerASGIMiddleware
 from fastapi_events.handlers.aws import SQSForwardHandler
 
-app = FastAPI(title="Whats App Blaster API")
+app = FastAPI(title="Whats App Blaster API", root_path="/dev/")
 app.add_middleware(EventHandlerASGIMiddleware,
-                   handlers=[SQSForwardHandler(queue_url="test-queue",
-                                               region_name="eu-central-1")])
-handler = Mangum(app, api_gateway_base_path="/dev/")
+                   handlers=[SQSForwardHandler(queue_url="awslambda-fastapi-dev-sqs",
+                                               region_name="ap-southeast-1")])
+handler = Mangum(app)
 
 
 @ app.get("/", status_code=200)
