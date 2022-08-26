@@ -8,7 +8,7 @@ app = FastAPI(title="Whats App Blaster API")
 app.add_middleware(EventHandlerASGIMiddleware,
                    handlers=[SQSForwardHandler(queue_url="test-queue",
                                                region_name="eu-central-1")])
-handler = Mangum(app, api_gateway_base_path="/dev")
+handler = Mangum(app, api_gateway_base_path="/dev/")
 
 
 @ app.get("/", status_code=200)
