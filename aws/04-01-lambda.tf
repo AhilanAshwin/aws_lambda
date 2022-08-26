@@ -21,6 +21,11 @@ resource "aws_iam_role_policy_attachment" "lambda_sqs_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSQSFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_logs_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
+}
+
 resource "aws_lambda_function_event_invoke_config" "lambda" {
   function_name = aws_lambda_function.api_lambda.function_name
   destination_config {
