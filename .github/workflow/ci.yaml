@@ -7,8 +7,8 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1               
-  ECR_REPOSITORY: awslambda-fastapi           
-  CONTAINER_NAME: 478403784717.dkr.ecr.ap-southeast-1.amazonaws.com/awslambda-fastapi                        
+  ECR_REPOSITORY: 478403784717.dkr.ecr.ap-southeast-1.amazonaws.com/awslambda-fastapi           
+  CONTAINER_NAME: aws_lambda                        
 
 jobs:
   deploy:
