@@ -49,11 +49,11 @@ jobs:
         with:
           function_name: awslambda-fastapi-dev-api
           image_uri: ${{ steps.build-image.outputs.image }}
-          environment: ${{ env.ENVIRONEMNT }}
+          # environment: ${{ env.ENVIRONEMNT }}
 
       - name: AWS Worker Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
           function_name: awslambda-fastapi-dev-worker
           image_uri: ${{ steps.build-image.outputs.image }}
-          environment: ${{ env.ENVIRONEMNT }}
+          # environment: ${{ env.ENVIRONEMNT }}
