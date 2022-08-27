@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from mangum import Mangum
 
-# app = FastAPI(title="Whats App Blaster API", root_path="/dev/")
-app = FastAPI(title="Whats App Blaster API")
-handler = Mangum(app, api_gateway_base_path="/dev/")
+app = FastAPI(title="Whats App Blaster API", root_path="/dev/")
+handler = Mangum(app)
 
 
 @ app.get("/", status_code=200)
