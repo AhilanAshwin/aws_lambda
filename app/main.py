@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from app.config import get_settings
 
 settings = get_settings()
-root_path = "/" if settings.ENVIRONMENT == 'local' else f"/{settings.ENVIRONMENT}/"
+root_path = "/" if settings.STAGE == 'local' else f"/{settings.STAGE}/"
 app = FastAPI(title=settings.PROJECT_NAME, root_path=root_path,
               description="An API Service created to blast promotional messages to prospective clients using Whats App.")
 handler = Mangum(app)
