@@ -22,12 +22,6 @@ def healthcheck():
     return {'status': "Success"}
 
 
-@app.post("/message", status_code=200)
-def send_message():
-    dispatch("to_queue", payload={'message': 'Sent through queue'})
-    return {'status': 'Sent'}
-
-
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=80, log_level="debug")

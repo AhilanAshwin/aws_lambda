@@ -39,7 +39,8 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to AWS Lambda.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY || true
+          docker build --cache-from $ECR_REGISTRY/$ECR_REPOSITORY -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
