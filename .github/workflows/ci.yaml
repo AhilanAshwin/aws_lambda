@@ -46,12 +46,15 @@ jobs:
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         uses: whoan/docker-build-with-cache-action@v5
+        env:
+          IMAGE_TAG: ${{ github.sha }}
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
-          registry: ${{ steps.login-ecr.outputs.registry }}
+          registry: ${{ env.ECR_REGISTRY }}
           image_name: ${{ env.ECR_REPOSITORY }}
-          image_tag: ${{ github.sha }}
+          image_tag: ${{ env.IMAGE_TAG }}
         run: |
-          echo "::set-output name=image::$registry/$image_name:$image_tag"  
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
