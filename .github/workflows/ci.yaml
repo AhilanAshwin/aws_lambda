@@ -50,15 +50,17 @@ jobs:
           registry: ${{ steps.login-ecr.outputs.registry }}
           image_name: ${{ env.ECR_REPOSITORY }}
           image_tag: ${{ github.sha }}
+        run: |
+          echo "::set-output name=image::$registry/$image_name:$image_tag"  
 
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
           function_name: awslambda-fastapi-dev-api
-          image_uri: ${{ steps.build-image.outputs.FULL_IMAGE_NAME }}
+          image_uri: ${{ steps.build-image.outputs.image }}
 
       - name: AWS Worker Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
           function_name: awslambda-fastapi-dev-worker
-          image_uri: ${{ steps.build-image.outputs.FULL_IMAGE_NAME }}
+          image_uri: ${{ steps.build-image.outputs.image }}
