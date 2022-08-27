@@ -1,6 +1,7 @@
-from sys import displayhook
-from fastapi import FastAPI
 from mangum import Mangum
+from fastapi import FastAPI
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
 
 from fastapi_events.dispatcher import dispatch
 from fastapi_events.handlers.aws import SQSForwardHandler
@@ -14,13 +15,16 @@ handler = Mangum(app)
 
 
 @ app.get("/", status_code=200)
-def get_index():
+def get_index(request: Request):
     return {'title': 'Hello World', 'author': "Ahilan Ashwin", 'version': "0.1.1"}
 
 
 @ app.get('/ping', status_code=200)
-def healthcheck():
-    dispatch('healthcheck', payload={'message': "Itworks"})
+def healthcheck(request: Request):
+    dispatch(
+        "health_check",
+        payload={"message": "This works!"}
+    )
     return {'status': "Success"}
 
 

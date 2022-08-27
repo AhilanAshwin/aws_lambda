@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "d1c766bb-ec0d-408e-b40e-ef4f76b0230b",
+      "receiptHandle": "AQEBYy44OaEdjTQL2KjF8A/t7SVNrgHddP7qZtB+ZTZwR8V5KgVvcyFtTGFLf5uu1QVWa8J3QETrhK5sNerdcIXvIzsB9PbuH9CP874ymoQulrTzoJoEAwqQ7bNGcj3r046IUFv6TL7FI2RXbELLD/1MYuX1r4oVEEZ6JNTp19rjRwH2Axr3EYRCjnXLIVv4vwj0JJjH8iWq1q/hXSSg3xyeWTwLJvXYWRme+Nu6hGwapMaHrY2fxU/QsTlbsmhrvPSWIT8svEaRUGSxnCZLOHQskWg0QN3yvgMig80oluV5x1y0l1e0mBii09VYKqUBCZblUasfUUObBV32ItUkz1JfTsqo2eLoBhTzAJpd8REtjL2WQmJKs/rXDj/cE2Qpm016Om+KaNda7PB9YOooUfjq8acIFyMIpsNUgtdc+SSyrk0=",
+      "body": "[\"health_check\", {\"message\": \"This works!\"}]",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1661588797372",
+        "SenderId": "478403784717",
+        "ApproximateFirstReceiveTimestamp": "1661588797381"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "9665820a3e955619e5629451a0ab33a8",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:ap-southeast-1:478403784717:awslambda-fastapi-dev-sqs",
+      "awsRegion": "ap-southeast-1"
+    }
+  ]
+}
