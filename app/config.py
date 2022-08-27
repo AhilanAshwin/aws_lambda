@@ -4,7 +4,6 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Whats App Blaster API"
-    VERSION: str
     ENVIRONMENT: str = "dev"
     SQS_URL: str = "awslambda-fastapi-dev-sqs"
 
