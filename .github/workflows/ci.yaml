@@ -30,33 +30,33 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@aaf69d68aa3fb14c1d5a6be9ac61fe15b48453a2
 
-      # - name: Build, tag, and push image to Amazon ECR
-      #   id: build-image
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     # Build a docker container and
-      #     # push it to ECR so that it can
-      #     # be deployed to AWS Lambda.
-      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-      #     echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
-        uses: whoan/docker-build-with-cache-action@v5
         env:
-          IMAGE_TAG: ${{ github.sha }}
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        with:
-          registry: ${{ env.ECR_REGISTRY }}
-          image_name: ${{ env.ECR_REPOSITORY }}
-          image_tag: ${{ env.IMAGE_TAG }}
-      
-      - name: Set output Image
+          IMAGE_TAG: ${{ github.sha }}
         run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to AWS Lambda.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      # - name: Build, tag, and push image to Amazon ECR
+      #   id: build-image
+      #   uses: whoan/docker-build-with-cache-action@v5
+      #   env:
+      #     IMAGE_TAG: ${{ github.sha }}
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #   with:
+      #     registry: ${{ env.ECR_REGISTRY }}
+      #     image_name: ${{ env.ECR_REPOSITORY }}
+      #     image_tag: ${{ env.IMAGE_TAG }}
+      
+      # - name: Set output Image
+      #   run: |
+      #     echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
