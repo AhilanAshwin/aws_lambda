@@ -53,6 +53,8 @@ jobs:
           registry: ${{ env.ECR_REGISTRY }}
           image_name: ${{ env.ECR_REPOSITORY }}
           image_tag: ${{ env.IMAGE_TAG }}
+      
+      - name: Set output Image
         run: |
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
