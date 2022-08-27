@@ -12,3 +12,8 @@ output "sqs_queue_id" {
   description = "The URL of the sqs queue"
   value       = module.sqs.sqs_queue_id
 }
+
+output "sqs_queue_id_local" {
+  description = "The URL of the sqs queue for local testing"
+  value       = module.sqs_local.sqs_queue_id
+}
