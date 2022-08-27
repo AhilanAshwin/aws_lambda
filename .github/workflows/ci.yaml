@@ -48,7 +48,7 @@ jobs:
         with:
           function_name: awslambda-fastapi-dev-api
           image_uri: ${{ steps.build-image.outputs.image }}
-          environment: foo=bar,author=appleboy
+          environment: foo=bar
 
 
       - name: AWS Worker Lambda Deploy
