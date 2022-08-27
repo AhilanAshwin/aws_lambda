@@ -7,7 +7,8 @@ on:
 
 env:
   AWS_REGION: ap-southeast-1               
-  ECR_REPOSITORY: awslambda-fastapi      
+  ECR_REPOSITORY: awslambda-fastapi 
+  ENVIRONMENT: development     
 
 jobs:
   deploy:
@@ -48,11 +49,11 @@ jobs:
         with:
           function_name: awslambda-fastapi-dev-api
           image_uri: ${{ steps.build-image.outputs.image }}
-          # environment: STAGE=dev,SQS_URL=awslambda-fastapi-dev-sqs
+          environment: STAGE=dev,SQS_URL=awslambda-fastapi-dev-sqs
 
       - name: AWS Worker Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
           function_name: awslambda-fastapi-dev-worker
           image_uri: ${{ steps.build-image.outputs.image }}
-          # environment: STAGE=dev,SQS_URL=awslambda-fastapi-dev-sqs
+          environment: STAGE=dev,SQS_URL=awslambda-fastapi-dev-sqs
