@@ -26,6 +26,22 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
+resource "aws_cloudwatch_log_group" "api_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.api_lambda.function_name}"
+  retention_in_days = 7
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
+resource "aws_cloudwatch_log_group" "worker_log_group" {
+  name              = "/aws/lambda/${aws_lambda_function.worker_lambda.function_name}"
+  retention_in_days = 7
+  lifecycle {
+    prevent_destroy = false
+  }
+}
+
 resource "aws_lambda_function_event_invoke_config" "lambda" {
   function_name = aws_lambda_function.api_lambda.function_name
   destination_config {
