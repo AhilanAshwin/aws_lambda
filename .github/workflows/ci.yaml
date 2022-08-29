@@ -39,7 +39,7 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to AWS Lambda.
-          docker build --build-arg STAGE=dev --build-arg SQS_URL=awslambda-fastapi-dev-sqs -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
@@ -48,7 +48,7 @@ jobs:
         with:
           function_name: awslambda-fastapi-dev-api
           image_uri: ${{ steps.build-image.outputs.image }}
-          # environment: STAGE=dev,SQS_URL=awslambda-fastapi-dev-sqs
+          environment: STAGE="dev",SQS_URL="awslambda-fastapi-dev-sqs"
 
 
       - name: AWS Worker Lambda Deploy
