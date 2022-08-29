@@ -65,10 +65,8 @@ resource "aws_api_gateway_deployment" "api_deployment" {
   ]
 }
 
-resource "aws_api_gateway_stage" "api_stage" {
-  # checkov:skip=CKV2_AWS_29:WAF not needed for non-prod use
+resource "aws_api_gateway_stage" "api_dev" {
   deployment_id = aws_api_gateway_deployment.api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   stage_name    = "dev"
 }
-

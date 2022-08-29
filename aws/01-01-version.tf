@@ -15,11 +15,9 @@ provider "aws" {
 
 # These are a set of local values that can be declared together
 locals {
-  prefix      = "${var.app_prefix}-${var.environment}"
-  environment = var.environment
+  prefix = var.app_prefix
   common_tags = {
-    author      = var.author
-    environment = var.environment
-    app_name    = var.app_name
+    author   = var.creator
+    app_name = var.app_name
   }
 }

@@ -14,12 +14,6 @@ variable "app_prefix" {
   type        = string
 }
 
-# Set the name of the enviroment ie, prod, stage, dev
-variable "environment" {
-  description = "Environment variable used as prefix"
-  type        = string
-}
-
 # Set the default region
 variable "aws_region" {
   description = "Region in which aws resources are created"
@@ -28,7 +22,7 @@ variable "aws_region" {
 }
 
 # Author of the infrastructure configuration
-variable "author" {
+variable "creator" {
   description = "Author of the config file"
   type        = string
   default     = "Analytics Member"
