@@ -27,7 +27,7 @@ resource "aws_api_gateway_integration" "api_proxy_root_integration" {
   http_method             = aws_api_gateway_method.api_gateway_root_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda.invoke_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/$${stageVariables.lambda_name}/invocations"
 }
 
 resource "aws_api_gateway_method" "api_gateway_proxy_method" {
@@ -48,10 +48,10 @@ resource "aws_api_gateway_integration" "api_proxy_integration" {
   http_method             = aws_api_gateway_method.api_gateway_proxy_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda.invoke_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/$${stageVariables.lambda_name}/invocations"
 }
 
-resource "aws_api_gateway_deployment" "api_deployment" {
+resource "aws_api_gateway_deployment" "api_deployment_dev" {
   rest_api_id       = aws_api_gateway_rest_api.api_gateway.id
   stage_description = md5(file("03-01-api-gateway.tf")) # Force a new deployment when this file changes
 
@@ -66,7 +66,10 @@ resource "aws_api_gateway_deployment" "api_deployment" {
 }
 
 resource "aws_api_gateway_stage" "api_dev" {
-  deployment_id = aws_api_gateway_deployment.api_deployment.id
+  deployment_id = aws_api_gateway_deployment.api_deployment_dev.id
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
   stage_name    = "dev"
+  variables = {
+    "lambda_name" = aws_lambda_function.api_lambda.name
+  }
 }
