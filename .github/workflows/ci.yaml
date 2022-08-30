@@ -50,28 +50,28 @@ jobs:
         id: setlambda
         run: |
           if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
-            echo "::set-output name=apilambda::awslambda-fastapi-prod-api"
-            echo "::set-output name=workerlambda::awslambda-fastapi-prod-worker"
+            echo "::set-output name=apilambda::$FUNCTION_NAME-api-prod"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-prod"
           fi
 
           if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
-            echo "::set-output name=api_lambda::awslambda-fastapi-stage-api"
-            echo "::set-output name=workerlambda::awslambda-fastapi-stage-worker"
+            echo "::set-output name=api_lambda::${FUNCTION_NAME}-api-stage"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-stage"
           fi
 
           if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
-            echo "::set-output name=apilambda::awslambda-fastapi-dev-api"
-            echo "::set-output name=workerlambda::awslambda-fastapi-dev-worker"
+            echo "::set-output name=apilambda::${FUNCTION_NAME}-api-dev"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-dev"
           fi    
 
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
-          function_name: awslambda-fastapi-dev-api
+          function_name: ${{ steps.setlambda.outputs.apilambda }}
           image_uri: ${{ steps.build-image.outputs.image }}
 
-      # - name: AWS Worker Lambda Deploy
-      #   uses: appleboy/lambda-action@master
-      #   with:
-      #     function_name: ${{ steps.setlambda.outputs.workerlambda }}
-      #     image_uri: ${{ steps.build-image.outputs.image }}
+      - name: AWS Worker Lambda Deploy
+        uses: appleboy/lambda-action@master
+        with:
+          function_name: ${{ steps.setlambda.outputs.workerlambda }}
+          image_uri: ${{ steps.build-image.outputs.image }}
