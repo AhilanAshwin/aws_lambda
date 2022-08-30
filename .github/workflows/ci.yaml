@@ -4,16 +4,19 @@ on:
   push:
     branches:
       - main
+      - stage
+      - develop
 
 env:
   AWS_REGION: ap-southeast-1               
   ECR_REPOSITORY: awslambda-fastapi 
+  FUNCTION_NAME: awslambda-fastapi
 
 jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    environment: production
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/stage'
 
     steps:
       - name: Checkout
@@ -42,15 +45,33 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        
+      
+      - name: Set Lambda Functions to Update
+        id: setlambda
+        run: |
+          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+            echo "::set-output name=apilambda::$FUNCTION_NAME-prod-api"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-prod-worker"
+          fi
+
+          if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
+            echo "::set-output name=api_lambda::$FUNCTION_NAME-stage-api"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-stage-worker"
+          fi
+
+          if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
+            echo "::set-output name=apilambda::$FUNCTION_NAME-dev-api"
+            echo "::set-output name=workerlambda::$FUNCTION_NAME-dev-worker"
+          fi    
+
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
-          function_name: awslambda-fastapi-dev-api
+          function_name: ${{ steps.setlambda.outputs.apilambda }}
           image_uri: ${{ steps.build-image.outputs.image }}
 
       - name: AWS Worker Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
-          function_name: awslambda-fastapi-dev-worker
+          function_name: ${{ steps.setlambda.outputs.workerlambda }}
           image_uri: ${{ steps.build-image.outputs.image }}
