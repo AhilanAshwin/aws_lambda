@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+
 resource "aws_api_gateway_rest_api" "api_gateway" {
   name        = local.prefix
   description = "API Gateway that proxies all requests to the FastAPI Lambda function"
@@ -27,7 +29,7 @@ resource "aws_api_gateway_integration" "api_proxy_root_integration" {
   http_method             = aws_api_gateway_method.api_gateway_root_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda.invoke_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:$${stageVariables.lbfunc}/invocations"
 }
 
 resource "aws_api_gateway_method" "api_gateway_proxy_method" {
@@ -48,10 +50,11 @@ resource "aws_api_gateway_integration" "api_proxy_integration" {
   http_method             = aws_api_gateway_method.api_gateway_proxy_method.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.api_lambda.invoke_arn
+  uri                     = "arn:aws:apigateway:${var.aws_region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${var.aws_region}:${data.aws_caller_identity.current.account_id}:function:$${stageVariables.lbfunc}/invocations"
+
 }
 
-resource "aws_api_gateway_deployment" "api_deployment_dev" {
+resource "aws_api_gateway_deployment" "api_deployment" {
   rest_api_id       = aws_api_gateway_rest_api.api_gateway.id
   stage_description = md5(file("03-01-api-gateway.tf"))
 
@@ -65,8 +68,12 @@ resource "aws_api_gateway_deployment" "api_deployment_dev" {
   ]
 }
 
-resource "aws_api_gateway_stage" "api_dev" {
-  deployment_id = aws_api_gateway_deployment.api_deployment_dev.id
+resource "aws_api_gateway_stage" "api" {
+  for_each      = toset(local.environments)
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
   rest_api_id   = aws_api_gateway_rest_api.api_gateway.id
-  stage_name    = "dev"
+  stage_name    = each.key
+  variables = {
+    "lbfunc" = "${local.prefix}-api-${each.key}"
+  }
 }

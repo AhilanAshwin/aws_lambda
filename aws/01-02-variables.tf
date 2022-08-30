@@ -27,5 +27,3 @@ variable "creator" {
   type        = string
   default     = "Analytics Member"
 }
-
-

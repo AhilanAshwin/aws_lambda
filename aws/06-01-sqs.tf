@@ -1,8 +1,9 @@
 module "sqs" {
-  source  = "terraform-aws-modules/sqs/aws"
-  version = "3.3.0"
-  name    = "${local.prefix}-sqs"
-  tags    = local.common_tags
+  for_each = toset(local.environments)
+  source   = "terraform-aws-modules/sqs/aws"
+  version  = "3.3.0"
+  name     = "${local.prefix}-sqs-${each.key}"
+  tags     = local.common_tags
 }
 
 module "sqs_local" {
