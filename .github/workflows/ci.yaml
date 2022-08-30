@@ -67,11 +67,11 @@ jobs:
       - name: AWS API Lambda Deploy
         uses: appleboy/lambda-action@master
         with:
-          function_name: ${{ steps.setlambda.outputs.apilambda }}
+          function_name: awslambda-fastapi-dev-api
           image_uri: ${{ steps.build-image.outputs.image }}
 
-      - name: AWS Worker Lambda Deploy
-        uses: appleboy/lambda-action@master
-        with:
-          function_name: ${{ steps.setlambda.outputs.workerlambda }}
-          image_uri: ${{ steps.build-image.outputs.image }}
+      # - name: AWS Worker Lambda Deploy
+      #   uses: appleboy/lambda-action@master
+      #   with:
+      #     function_name: ${{ steps.setlambda.outputs.workerlambda }}
+      #     image_uri: ${{ steps.build-image.outputs.image }}
