@@ -50,18 +50,18 @@ jobs:
         id: setlambda
         run: |
           if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
-            echo "::set-output name=apilambda::$FUNCTION_NAME-prod-api"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-prod-worker"
+            echo "::set-output name=apilambda::${FUNCTION_NAME}-prod-api"
+            echo "::set-output name=workerlambda::${FUNCTION_NAME}-prod-worker"
           fi
 
           if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
-            echo "::set-output name=api_lambda::$FUNCTION_NAME-stage-api"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-stage-worker"
+            echo "::set-output name=api_lambda::${FUNCTION_NAME}-stage-api"
+            echo "::set-output name=workerlambda::${FUNCTION_NAME}-stage-worker"
           fi
 
           if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
-            echo "::set-output name=apilambda::$FUNCTION_NAME-dev-api"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-dev-worker"
+            echo "::set-output name=apilambda::${FUNCTION_NAME}-dev-api"
+            echo "::set-output name=workerlambda::${FUNCTION_NAME}-dev-worker"
           fi    
 
       - name: AWS API Lambda Deploy
