@@ -56,6 +56,13 @@ resource "aws_lambda_function" "api_lambda" {
   role          = aws_iam_role.lambda_role.arn
   image_uri     = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
   package_type  = "Image"
+  environment {
+    variables = {
+      "STAGE"   = "dev",
+      "SQS_URL" = "${local.prefix}-sqs"
+
+    }
+  }
 }
 
 resource "aws_lambda_function" "worker_lambda" {
