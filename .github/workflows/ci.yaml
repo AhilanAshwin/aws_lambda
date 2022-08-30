@@ -68,7 +68,7 @@ jobs:
         run: |
           aws lambda update-function-code \
            --function-name ${{ steps.setlambda.outputs.apilambda }} 
-           --image-uri $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+           --image-uri ${{ steps.build-image.outputs.image }}
 
       # - name: AWS Worker Lambda Deploy
       #   run: |
