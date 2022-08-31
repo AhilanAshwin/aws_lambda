@@ -65,10 +65,16 @@ jobs:
           fi    
 
       - name: AWS API Lambda Deploy
-        run: |
-          aws lambda update-function-code \
-           --function-name ${{ steps.setlambda.outputs.apilambda }} 
-           --image-uri ${{ steps.build-image.outputs.image }}
+        uses: appleboy/lambda-action@master
+        with:
+          function_name: awslambda-fastapi-dev-api
+          image_uri: ${{ steps.build-image.outputs.image }}
+
+      # - name: AWS API Lambda Deploy
+      #   run: |
+      #     aws lambda update-function-code \
+      #      --function-name ${{ steps.setlambda.outputs.apilambda }} 
+      #      --image-uri ${{ steps.build-image.outputs.image }}
 
       # - name: AWS Worker Lambda Deploy
       #   run: |
