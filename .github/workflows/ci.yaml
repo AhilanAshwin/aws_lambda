@@ -10,7 +10,7 @@ on:
 env:
   AWS_REGION: ap-southeast-1               
   ECR_REPOSITORY: awslambda-fastapi 
-  FUNCTION_NAME: awslambda-fastapi
+  FUNCTION_PREFIX: awslambda-fastapi
 
 jobs:
   deploy:
@@ -51,30 +51,33 @@ jobs:
         run: |
           if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
             echo "::set-output name=apilambda::$FUNCTION_NAME-api-prod"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-prod"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-prod"
           fi
 
           if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
             echo "::set-output name=api_lambda::${FUNCTION_NAME}-api-stage"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-stage"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-stage"
           fi
 
           if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
             echo "::set-output name=apilambda::${FUNCTION_NAME}-api-dev"
-            echo "::set-output name=workerlambda::$FUNCTION_NAME-worker-dev"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-dev"
           fi    
 
-      - name: AWS API Lambda Deploy
-        uses: appleboy/lambda-action@master
-        with:
-          function_name: awslambda-fastapi-dev-api
-          image_uri: ${{ steps.build-image.outputs.image }}
-
       # - name: AWS API Lambda Deploy
-      #   run: |
-      #     aws lambda update-function-code \
-      #      --function-name ${{ steps.setlambda.outputs.apilambda }} 
-      #      --image-uri ${{ steps.build-image.outputs.image }}
+      #   uses: appleboy/lambda-action@master
+      #   with:
+      #     function_name: awslambda-fastapi-dev-api
+      #     image_uri: ${{ steps.build-image.outputs.image }}
+
+      - name: AWS API Lambda Deploy
+        env:
+          FUNCTION_NAME: ${{ steps.setlambda.outputs.apilambda }} 
+          IMAGE_URI: ${{ steps.build-image.outputs.image }}
+        run: |
+          aws lambda update-function-code \
+           --function-name $FUNCTION_NAME 
+           --image-uri $IMAGE_URI
 
       # - name: AWS Worker Lambda Deploy
       #   run: |
