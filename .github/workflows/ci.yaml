@@ -19,24 +19,6 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/stage'
 
     steps:
-      - name: Set Lambda Functions to Update
-        id: setlambda
-        run: |
-          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
-            echo "::set-output name=apilambda::$FUNCTION_PREFIX-api-prod"
-            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-prod"
-          fi
-
-          if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
-            echo "::set-output name=api_lambda::$FUNCTION_PREFIX-api-stage"
-            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-stage"
-          fi
-
-          if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
-            echo "::set-output name=apilambda::$FUNCTION_PREFIX-api-dev"
-            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-dev"
-          fi    
-
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -63,6 +45,24 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Set Lambda Functions to Update
+        id: setlambda
+        run: |
+          if [[ "${{github.base_ref}}" == "main" || "${{github.ref}}" == "refs/heads/main" ]]; then
+            echo "::set-output name=apilambda::$FUNCTION_PREFIX-api-prod"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-prod"
+          fi
+
+          if [[ "${{github.base_ref}}" == "stage" || "${{github.ref}}" == "refs/heads/stage" ]]; then
+            echo "::set-output name=api_lambda::$FUNCTION_PREFIX-api-stage"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-stage"
+          fi
+
+          if [[ "${{github.base_ref}}" == "develop" || "${{github.ref}}" == "refs/heads/develop" ]]; then
+            echo "::set-output name=apilambda::$FUNCTION_PREFIX-api-dev"
+            echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-dev"
+          fi    
 
       - name: AWS API Lambda Deploy
         env:
