@@ -36,7 +36,7 @@ jobs:
             echo "::set-output name=apilambda::$FUNCTION_PREFIX-api-dev"
             echo "::set-output name=workerlambda::$FUNCTION_PREFIX-worker-dev"
           fi    
-          
+
       - name: Checkout
         uses: actions/checkout@v3
 
@@ -70,14 +70,9 @@ jobs:
           IMAGE_URI: ${{ steps.build-image.outputs.image }}
         run: aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $IMAGE_URI
 
-      # - name: AWS Worker Lambda Deploy
-      #   run: |
-      #     aws lambda update-function-code \
-      #      --function-name ${{ steps.setlambda.outputs.workerlambda }}
-      #      --image-uri ${{ steps.build-image.outputs.image }}
+      - name: AWS Worker Lambda Deploy
+        env:
+          LAMBDA_FUNCTION_NAME: ${{ steps.setlambda.outputs.worker }} 
+          IMAGE_URI: ${{ steps.build-image.outputs.image }}
+        run: aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $IMAGE_URI
 
-      # - name: AWS API Lambda Deploy
-      #   uses: appleboy/lambda-action@master
-      #   with:
-      #     function_name: awslambda-fastapi-dev-api
-      #     image_uri: ${{ steps.build-image.outputs.image }}
