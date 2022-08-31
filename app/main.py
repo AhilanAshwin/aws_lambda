@@ -14,7 +14,8 @@ handler = Mangum(app)
 
 @ app.get("/", status_code=200)
 def get_index():
-    return {'title': 'Hello World', 'author': "Ahilan Ashwin", 'version': "0.1.1", 'stage': settings.STAGE}
+    return {'title': 'Hello World', 'author': "Ahilan Ashwin",
+            'version': "0.1.1", 'stage': settings.STAGE}
 
 
 @ app.get('/ping', status_code=200)
