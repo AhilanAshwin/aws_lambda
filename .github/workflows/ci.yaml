@@ -72,7 +72,7 @@ jobs:
 
       - name: AWS Worker Lambda Deploy
         env:
-          LAMBDA_FUNCTION_NAME: ${{ steps.setlambda.outputs.worker }} 
+          LAMBDA_FUNCTION_NAME: ${{ steps.setlambda.outputs.workerlambda }} 
           IMAGE_URI: ${{ steps.build-image.outputs.image }}
         run: aws lambda update-function-code --function-name $LAMBDA_FUNCTION_NAME --image-uri $IMAGE_URI
 
