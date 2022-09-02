@@ -95,10 +95,10 @@ resource "aws_lambda_function" "worker_lambda" {
 data "aws_subnets" "subnets" {
   filter {
     name   = "vpc-id"
-    values = ["vpc-09f4f096d1d7ad0a6"]
+    values = [module.vpc.vpc_id]
   }
   tags = {
-    Type = "Private Subnets"
+    Type = "Public Subnets"
   }
 }
 
@@ -107,7 +107,7 @@ module "security-group" {
   version     = "4.13.0"
   name        = "${local.prefix}-sg"
   description = "Security group AWS Lambda to connect to the internet. HTTP open for entire Internet (IPv4 CIDR), egress ports are all world open"
-  vpc_id      = "vpc-09f4f096d1d7ad0a6"
+  vpc_id      = module.vpc.vpc_id
   # #   Ingress Rules & CIDR blocks
   # ingress_rules       = ["ssh-tcp", "http-80-tcp"]
   # ingress_cidr_blocks = ["0.0.0.0/0"]
