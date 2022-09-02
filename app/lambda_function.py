@@ -7,6 +7,6 @@ def consumer_handler(event, context):
     # NOTE: Do not change the namee of this function
     print("HELLO!")
     print("In lambda")
-    print(os.listdir("/"))
+    print(os.listdir("/mnt"))
     r = requests.get("https://google.com")
     return r.status_code
