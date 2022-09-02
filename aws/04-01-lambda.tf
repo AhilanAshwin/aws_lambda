@@ -98,7 +98,7 @@ data "aws_subnets" "subnets" {
     values = [module.vpc.vpc_id]
   }
   tags = {
-    Type = "Public Subnets"
+    Type = "Private Subnets"
   }
 }
 
