@@ -26,6 +26,11 @@ resource "aws_iam_role_policy_attachment" "lambda_logs_policy" {
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_vpc_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_lambda_function_event_invoke_config" "lambda" {
   for_each      = toset(local.environments)
   function_name = aws_lambda_function.api_lambda[each.key].function_name
@@ -76,7 +81,37 @@ resource "aws_lambda_function" "worker_lambda" {
   image_uri     = "${aws_ecr_repository.ecr_repo.repository_url}@${data.aws_ecr_image.lambda_image.id}"
   package_type  = "Image"
 
+  vpc_config {
+    # Every subnet should be able to reach an EFS mount target in the same Availability Zone. Cross-AZ mounts are not permitted.
+    subnet_ids         = data.aws_subnets.subnets.ids
+    security_group_ids = [module.security-group.security_group_id]
+  }
+
   image_config {
     command = ["app.lambda_function.consumer_handler"]
   }
+}
+
+data "aws_subnets" "subnets" {
+  filter {
+    name   = "vpc-id"
+    values = ["vpc-09f4f096d1d7ad0a6"]
+  }
+  tags = {
+    Type = "Private Subnets"
+  }
+}
+
+module "security-group" {
+  source      = "terraform-aws-modules/security-group/aws"
+  version     = "4.13.0"
+  name        = "${local.prefix}-sg"
+  description = "Security group AWS Lambda to connect to the internet. HTTP open for entire Internet (IPv4 CIDR), egress ports are all world open"
+  vpc_id      = "vpc-09f4f096d1d7ad0a6"
+  # #   Ingress Rules & CIDR blocks
+  # ingress_rules       = ["ssh-tcp", "http-80-tcp"]
+  # ingress_cidr_blocks = ["0.0.0.0/0"]
+  # Egress Rules & CIDR blocks
+  egress_rules = ["all-all"]
+  tags         = local.common_tags
 }
