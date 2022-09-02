@@ -31,6 +31,11 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "lambda_efs_policy" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticFileSystemClientFullAccess"
+}
+
 resource "aws_lambda_function_event_invoke_config" "lambda" {
   for_each      = toset(local.environments)
   function_name = aws_lambda_function.api_lambda[each.key].function_name
@@ -84,8 +89,18 @@ resource "aws_lambda_function" "worker_lambda" {
   vpc_config {
     # Every subnet should be able to reach an EFS mount target in the same Availability Zone. Cross-AZ mounts are not permitted.
     subnet_ids         = data.aws_subnets.subnets.ids
-    security_group_ids = [module.security-group.security_group_id]
+    security_group_ids = [module.lambda-sg.security_group_id]
   }
+
+  file_system_config {
+    # EFS file system access point ARN
+    arn = aws_efs_access_point.access_point_for_lambda.arn
+
+    # Local mount path inside the lambda function. Must start with '/mnt/'.
+    local_mount_path = "/mnt/files"
+  }
+
+  depends_on = [aws_efs_mount_target.alpha]
 
   image_config {
     command = ["app.lambda_function.consumer_handler"]
@@ -102,16 +117,11 @@ data "aws_subnets" "subnets" {
   }
 }
 
-module "security-group" {
-  source      = "terraform-aws-modules/security-group/aws"
-  version     = "4.13.0"
-  name        = "${local.prefix}-sg"
-  description = "Security group AWS Lambda to connect to the internet. HTTP open for entire Internet (IPv4 CIDR), egress ports are all world open"
-  vpc_id      = module.vpc.vpc_id
-  # #   Ingress Rules & CIDR blocks
-  # ingress_rules       = ["ssh-tcp", "http-80-tcp"]
-  # ingress_cidr_blocks = ["0.0.0.0/0"]
-  # Egress Rules & CIDR blocks
+module "lambda-sg" {
+  source       = "terraform-aws-modules/security-group/aws"
+  version      = "4.13.0"
+  name         = "${local.prefix}-lambda-sg"
+  vpc_id       = module.vpc.vpc_id
   egress_rules = ["all-all"]
   tags         = local.common_tags
 }
