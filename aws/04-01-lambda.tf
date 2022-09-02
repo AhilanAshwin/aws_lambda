@@ -72,8 +72,9 @@ resource "aws_lambda_function" "api_lambda" {
   package_type  = "Image"
   environment {
     variables = {
-      "STAGE"   = "${each.key}",
-      "SQS_URL" = "${local.prefix}-sqs-${each.key}"
+      "STAGE"            = "${each.key}",
+      "SQS_URL"          = "${local.prefix}-sqs-${each.key}"
+      "LOCAL_MOUNT_PATH" = "/mnt/files"
 
     }
   }
