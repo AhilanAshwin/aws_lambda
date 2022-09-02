@@ -2,3 +2,4 @@ uvicorn[standard]
 fastapi
 mangum
 boto3
+requests
