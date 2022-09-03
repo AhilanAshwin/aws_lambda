@@ -113,7 +113,7 @@ resource "aws_lambda_function" "worker_lambda" {
   depends_on = [aws_efs_mount_target.alpha]
 
   image_config {
-    command = ["app.lambda_function.consumer_handler"]
+    command = ["app.lambda.handler"]
   }
 }
 

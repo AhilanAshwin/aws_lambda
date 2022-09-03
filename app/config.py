@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Whats App Blaster API"
     STAGE: str = "local"
     SQS_URL: str = "awslambda-fastapi-dev-sqs-local"
-    LOCAL_MOUNT_PATH: Path = Path("./")
+    LOCAL_MOUNT_PATH: Path = Path("./") / STAGE
 
     class Config:
         env_file = ".env"
