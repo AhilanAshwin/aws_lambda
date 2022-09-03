@@ -1,12 +1,7 @@
-import os
-import json
-import requests
+from config import get_settings
+settings = get_settings()
 
 
 def consumer_handler(event, context):
     # NOTE: Do not change the namee of this function
-    print("HELLO!")
-    print("In lambda")
-    print(os.listdir("/mnt"))
-    r = requests.get("https://google.com")
-    return r.status_code
+    return "Success"

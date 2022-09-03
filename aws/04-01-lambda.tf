@@ -1,13 +1,3 @@
-data "aws_subnets" "subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [module.vpc.vpc_id]
-  }
-  tags = {
-    Type = "Private Subnets"
-  }
-}
-
 module "lambda-sg" {
   source       = "terraform-aws-modules/security-group/aws"
   version      = "4.13.0"
@@ -108,7 +98,7 @@ resource "aws_lambda_function" "worker_lambda" {
 
   vpc_config {
     # Every subnet should be able to reach an EFS mount target in the same Availability Zone. Cross-AZ mounts are not permitted.
-    subnet_ids         = data.aws_subnets.subnets.ids
+    subnet_ids         = module.vpc.private_subnets
     security_group_ids = [module.lambda-sg.security_group_id]
   }
 

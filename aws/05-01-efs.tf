@@ -20,7 +20,7 @@ resource "aws_efs_file_system" "efs_for_lambda" {
 }
 
 resource "aws_efs_mount_target" "alpha" {
-  for_each        = toset(data.aws_subnets.subnets.ids)
+  for_each        = toset(module.vpc.private_subnets)
   file_system_id  = aws_efs_file_system.efs_for_lambda.id
   subnet_id       = each.key
   security_groups = [module.efs-security-group.security_group_id]
